@@ -289,3 +289,45 @@ body {
   color: #f5f5f5;
   border: 1px solid #555555;
 }
+
+.remove-days-box {
+  margin-top: 20px;
+  padding: 14px;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  background-color: var(--result-background);
+}
+
+.remove-days-title {
+  margin: 0 0 10px 0;
+  text-align: center;
+  font-weight: bold;
+  color: #bfac28;
+  font-size: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: #bfac28;
+}
+
+.remove-days-result {
+  border: 2px solid #bfac28;
+  font-size: 17px;
+}
+
+.small-result {
+  font-size: 13px;
+  opacity: 0.9;
+}

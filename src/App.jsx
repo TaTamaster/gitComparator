@@ -14,6 +14,9 @@ function App() {
   const [tema, setTema] = useState("default");
   const [idioma, setIdioma] = useState("es");
 
+  const [quitarSabados, setQuitarSabados] = useState(false);
+  const [quitarDomingos, setQuitarDomingos] = useState(false);
+
   const textos = obtenerTextos(idioma);
 
   const fechaInicioFormateada = formatearFecha(fechaInicio, idioma);
@@ -30,6 +33,10 @@ function App() {
         meses: 0,
         diasRestantes: 0,
         horas: 0,
+        sabadosQuitados: 0,
+        domingosQuitados: 0,
+        totalDiasQuitados: 0,
+        totalDiasConDescuento: 0,
       };
     }
 
@@ -48,6 +55,10 @@ function App() {
         meses: 0,
         diasRestantes: 0,
         horas: 0,
+        sabadosQuitados: 0,
+        domingosQuitados: 0,
+        totalDiasQuitados: 0,
+        totalDiasConDescuento: 0,
       };
     }
 
@@ -59,6 +70,18 @@ function App() {
 
     const { meses, diasRestantes } = calcularMesesYDias(inicioUTC, finUTC);
 
+    const diasQuitados = calcularDiasQuitados(
+      inicioUTC,
+      finUTC,
+      quitarSabados,
+      quitarDomingos
+    );
+
+    const totalDiasConDescuento = Math.max(
+      totalDias - diasQuitados.totalDiasQuitados,
+      0
+    );
+
     return {
       valido: true,
       tipo: "success",
@@ -67,8 +90,12 @@ function App() {
       meses,
       diasRestantes,
       horas: totalHoras,
+      sabadosQuitados: diasQuitados.sabados,
+      domingosQuitados: diasQuitados.domingos,
+      totalDiasQuitados: diasQuitados.totalDiasQuitados,
+      totalDiasConDescuento,
     };
-  }, [fechaInicio, fechaFin, idioma]);
+  }, [fechaInicio, fechaFin, idioma, quitarSabados, quitarDomingos]);
 
   function manejarCambioFechaInicio(fechaSeleccionada) {
     setFechaInicio(fechaSeleccionada);
@@ -149,22 +176,22 @@ function App() {
           <label className="label-text">{textos.fechaInicio}:</label>
 
           <DatePicker
-              selected={fechaInicio}
-              onChange={manejarCambioFechaInicio}
-              dateFormat={idioma === "es" ? "dd/MM/yyyy" : "yyyy/MM/dd"}
-              locale={idioma === "es" ? "es" : "en-US"}
-              placeholderText={idioma === "es" ? "dd/mm/yyyy" : "yyyy/mm/dd"}
-              className="date-input"
-              wrapperClassName="date-picker-wrapper"
-              calendarClassName="custom-calendar"
-              showPopperArrow={false}
-              isClearable
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              scrollableYearDropdown
-              yearDropdownItemNumber={100}
-            />
+            selected={fechaInicio}
+            onChange={manejarCambioFechaInicio}
+            dateFormat={idioma === "es" ? "dd/MM/yyyy" : "yyyy/MM/dd"}
+            locale={idioma === "es" ? "es" : "en-US"}
+            placeholderText={idioma === "es" ? "dd/mm/yyyy" : "yyyy/mm/dd"}
+            className="date-input"
+            wrapperClassName="date-picker-wrapper"
+            calendarClassName="custom-calendar"
+            showPopperArrow={false}
+            isClearable
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            scrollableYearDropdown
+            yearDropdownItemNumber={100}
+          />
 
           <span className="formatted-date">
             {fechaInicio
@@ -177,30 +204,52 @@ function App() {
           <label className="label-text">{textos.fechaFin}:</label>
 
           <DatePicker
-              selected={fechaFin}
-              onChange={manejarCambioFechaFin}
-              minDate={fechaInicio}
-              disabled={!fechaInicio}
-              dateFormat={idioma === "es" ? "dd/MM/yyyy" : "yyyy/MM/dd"}
-              locale={idioma === "es" ? "es" : "en-US"}
-              placeholderText={idioma === "es" ? "dd/mm/yyyy" : "yyyy/mm/dd"}
-              className={`date-input ${!fechaInicio ? "disabled-input" : ""}`}
-              wrapperClassName="date-picker-wrapper"
-              calendarClassName="custom-calendar"
-              showPopperArrow={false}
-              isClearable
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              scrollableYearDropdown
-              yearDropdownItemNumber={100}
-            />
+            selected={fechaFin}
+            onChange={manejarCambioFechaFin}
+            minDate={fechaInicio}
+            disabled={!fechaInicio}
+            dateFormat={idioma === "es" ? "dd/MM/yyyy" : "yyyy/MM/dd"}
+            locale={idioma === "es" ? "es" : "en-US"}
+            placeholderText={idioma === "es" ? "dd/mm/yyyy" : "yyyy/mm/dd"}
+            className={`date-input ${!fechaInicio ? "disabled-input" : ""}`}
+            wrapperClassName="date-picker-wrapper"
+            calendarClassName="custom-calendar"
+            showPopperArrow={false}
+            isClearable
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            scrollableYearDropdown
+            yearDropdownItemNumber={100}
+          />
 
           <span className="formatted-date">
             {fechaFin
               ? `${textos.fechaSeleccionada}: ${fechaFinFormateada}`
               : textos.sinFechaSeleccionada}
           </span>
+        </div>
+
+        <div className="remove-days-box">
+          <p className="remove-days-title">{textos.quitarDiasTitulo}</p>
+
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={quitarSabados}
+              onChange={(e) => setQuitarSabados(e.target.checked)}
+            />
+            {textos.quitarSabados}
+          </label>
+
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={quitarDomingos}
+              onChange={(e) => setQuitarDomingos(e.target.checked)}
+            />
+            {textos.quitarDomingos}
+          </label>
         </div>
 
         <div className="result-container">
@@ -238,6 +287,19 @@ function App() {
 
               <label className="result-label">
                 {textos.totalHoras}: {resultado.horas}
+              </label>
+
+              <label className="result-label remove-days-result">
+                {textos.quitarDias}: {resultado.totalDiasConDescuento}
+              </label>
+
+              <label className="result-label">
+                {textos.diasDescontados}: {resultado.totalDiasQuitados}
+              </label>
+
+              <label className="result-label small-result">
+                {textos.sabadosQuitados}: {resultado.sabadosQuitados} |{" "}
+                {textos.domingosQuitados}: {resultado.domingosQuitados}
               </label>
             </>
           )}
@@ -287,6 +349,34 @@ function calcularMesesYDias(inicio, fin) {
   };
 }
 
+function calcularDiasQuitados(inicio, fin, quitarSabados, quitarDomingos) {
+  let sabados = 0;
+  let domingos = 0;
+
+  const fechaActual = new Date(inicio);
+  fechaActual.setUTCDate(fechaActual.getUTCDate() + 1);
+
+  while (fechaActual <= fin) {
+    const diaSemana = fechaActual.getUTCDay();
+
+    if (quitarSabados && diaSemana === 6) {
+      sabados++;
+    }
+
+    if (quitarDomingos && diaSemana === 0) {
+      domingos++;
+    }
+
+    fechaActual.setUTCDate(fechaActual.getUTCDate() + 1);
+  }
+
+  return {
+    sabados,
+    domingos,
+    totalDiasQuitados: sabados + domingos,
+  };
+}
+
 function formatearFecha(fecha, idioma) {
   if (!fecha) return "";
 
@@ -324,6 +414,13 @@ function obtenerTextos(idioma) {
       totalDias: "Total days",
       mesesDias: "Months and days",
       totalHoras: "Total hours",
+      quitarDiasTitulo: "Remove days",
+      quitarSabados: "Remove Saturdays",
+      quitarDomingos: "Remove Sundays",
+      quitarDias: "Remove days",
+      diasDescontados: "Discounted days",
+      sabadosQuitados: "Saturdays removed",
+      domingosQuitados: "Sundays removed",
     };
   }
 
@@ -340,6 +437,13 @@ function obtenerTextos(idioma) {
     totalDias: "Total de días",
     mesesDias: "Meses y días",
     totalHoras: "Total de horas",
+    quitarDiasTitulo: "Quitar días",
+    quitarSabados: "Quitar sábados",
+    quitarDomingos: "Quitar domingos",
+    quitarDias: "Quitar días",
+    diasDescontados: "Días descontados",
+    sabadosQuitados: "Sábados quitados",
+    domingosQuitados: "Domingos quitados",
   };
 }
 
