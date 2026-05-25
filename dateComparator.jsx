@@ -417,8 +417,8 @@ function obtenerTextos(idioma) {
       quitarDiasTitulo: "Remove days",
       quitarSabados: "Remove Saturdays",
       quitarDomingos: "Remove Sundays",
-      quitarDias: "Remove days",
-      diasDescontados: "Discounted days",
+      quitarDias: "Total after removing days",
+      diasDescontados: "Removed days",
       sabadosQuitados: "Saturdays removed",
       domingosQuitados: "Sundays removed",
     };
@@ -440,8 +440,8 @@ function obtenerTextos(idioma) {
     quitarDiasTitulo: "Quitar días",
     quitarSabados: "Quitar sábados",
     quitarDomingos: "Quitar domingos",
-    quitarDias: "Quitar días",
-    diasDescontados: "Días descontados",
+    quitarDias: "Total después de quitar días",
+    diasDescontados: "Días quitados",
     sabadosQuitados: "Sábados quitados",
     domingosQuitados: "Domingos quitados",
   };
